@@ -21,6 +21,26 @@ const config = {
   ],
   callbacks: {
     ...authConfig.callbacks,
+    async session({ session, user, trigger, token }: any) {
+      session.user.id = token.sub;
+      session.user.role = token.role;
+      session.user.username = token.username;
+      if (trigger === 'update') {
+        session.user.name = user.name;
+      }
+      return session;
+    },
+    async jwt({ token, user, trigger, session }: any) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+      // if (session?.user.name && trigger === 'update') {
+      //   token.name = session.user.name;
+      // }
+
+      return token;
+    },
   },
 };
 
